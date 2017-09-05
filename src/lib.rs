@@ -9,11 +9,14 @@ pub struct FreeRanges {
 }
 
 impl FreeRanges {
+    /// Starts empty with no ranges free
+    #[inline]
     pub fn new() -> Self {
         Default::default()
     }
 
     /// Initializes FreeRanges with 0...usize::MAX already free
+    #[inline]
     pub fn with_all_free() -> FreeRanges {
         FreeRanges::with_initial_range(Range {
             min: 0,
@@ -21,16 +24,22 @@ impl FreeRanges {
         })
     }
 
+    /// Initializes FreeRanges with the passed `range` already marked as free
+    #[inline]
     pub fn with_initial_range(range: Range) -> FreeRanges {
         let mut ranges = FreeRanges::new();
         ranges.free_list.insert(range);
         ranges
     }
 
+    /// Iterator over all of the contiguous free ranges
+    #[inline]
     pub fn free_ranges(&self) -> Iter<Range> {
         self.free_list.iter()
     }
 
+    /// Marks a specific index as free
+    #[inline]
     pub fn set_free(&mut self, index: usize) {
         if self.free_list.contains(&Range::id(index)) {
             return;
@@ -69,7 +78,9 @@ impl FreeRanges {
         }
     }
 
-    pub fn set_used(&mut self, index: usize) {
+    /// Marks a free index as used. Returns false if the index was not free
+    #[inline]
+    pub fn set_used(&mut self, index: usize) -> bool {
         let range = Range::id(index);
 
         if let Some(&intersecting) = self.free_list.get(&range) {
@@ -81,13 +92,20 @@ impl FreeRanges {
             if !right.empty() {
                 self.free_list.insert(right);
             }
+            true
+        } else {
+            false
         }
     }
 
+    /// Returns the first free value if one exists
+    #[inline]
     pub fn first(&self) -> Option<usize> {
         self.free_list.iter().nth(0).map(|r| r.min)
     }
 
+    /// Marks the first index in the free list as used and returns it
+    #[inline]
     pub fn set_first_used(&mut self) -> Option<usize> {
         if let Some(&first) = self.free_list.iter().nth(0) {
             self.free_list.remove(&first);
