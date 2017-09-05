@@ -122,7 +122,7 @@ impl FreeRanges {
     /// Returns the first free value if one exists
     #[inline]
     pub fn last(&self) -> Option<usize> {
-        self.free_list.iter().nth(0).map(|r| r.min)
+        self.free_list.iter().rev().nth(0).map(|r| r.max)
     }
 
     /// Marks the first index in the free list as used and returns it
