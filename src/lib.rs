@@ -113,6 +113,30 @@ impl FreeRanges {
             if !range.empty() {
                 self.free_list.insert(range);
             }
+            return Some(first.min)
+        }
+
+        None
+    }
+
+    /// Returns the first free value if one exists
+    #[inline]
+    pub fn last(&self) -> Option<usize> {
+        self.free_list.iter().nth(0).map(|r| r.min)
+    }
+
+    /// Marks the first index in the free list as used and returns it
+    #[inline]
+    pub fn set_last_used(&mut self) -> Option<usize> {
+        if let Some(&last) = self.free_list.iter().rev().nth(0) {
+            self.free_list.remove(&last);
+            if last.max != 0 {
+                let range = last.pop_back();
+                if !range.empty() {
+                    self.free_list.insert(range);
+                }
+            }
+            return Some(last.max);
         }
 
         None
