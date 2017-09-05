@@ -141,6 +141,13 @@ impl FreeRanges {
 
         None
     }
+
+    #[inline]
+    pub fn remove_last_contiguous(&mut self) {
+        if let Some(last) = self.last() {
+            self.free_list.remove(&Range::id(last));
+        }
+    }
 }
 
 #[derive(Copy, Clone)]
