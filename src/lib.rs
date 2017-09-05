@@ -40,9 +40,9 @@ impl FreeRanges {
 
     /// Marks a specific index as free
     #[inline]
-    pub fn set_free(&mut self, index: usize) {
+    pub fn set_free(&mut self, index: usize) -> bool {
         if self.free_list.contains(&Range::id(index)) {
-            return;
+            return false;
         }
 
         let range = Range::id(index);
@@ -76,6 +76,8 @@ impl FreeRanges {
                 self.free_list.insert(range);
             }
         }
+
+        true
     }
 
     /// Marks a free index as used. Returns false if the index was not free
