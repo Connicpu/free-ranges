@@ -172,7 +172,7 @@ impl Range {
 
     #[inline]
     pub fn empty(self) -> bool {
-        self.min >= self.max
+        self.min > self.max
     }
 
     #[inline]
