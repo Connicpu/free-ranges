@@ -1,6 +1,6 @@
 [package]
 name = "free-ranges"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Connie Hilarides <conni_h@outlook.com>"]
 license = "MIT"
 repository = "https://github.com/Connicpu/free-ranges"

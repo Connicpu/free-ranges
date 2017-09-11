@@ -152,6 +152,8 @@ impl FreeRanges {
     }
 }
 
+const EMPTY_RANGE: Range = Range { min: 1, max: 0 };
+
 #[derive(Copy, Clone)]
 pub struct Range {
     pub min: usize,
@@ -214,6 +216,10 @@ impl Range {
 
     #[inline]
     pub fn split(self, middle: usize) -> (Range, Range) {
+        if middle == 0 {
+            return (EMPTY_RANGE, self.pop_front());
+        }
+
         let left = Range {
             min: self.min,
             max: middle - 1,
