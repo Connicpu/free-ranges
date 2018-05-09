@@ -46,8 +46,32 @@ impl FreeRanges {
         }
 
         let range = Range::id(index);
+        self.do_set_free(range);
 
-        let range_front = if index > 0 { range.push_front() } else { range };
+        true
+    }
+
+    #[inline]
+    pub fn set_range_free(&mut self, range: Range) -> bool {
+        let front_check = self.free_list.get(&Range::id(range.min)).cloned();
+        let back_check = self.free_list.get(&Range::id(range.max)).cloned();
+
+        match (front_check, back_check) {
+            (Some(front_check), Some(back_check)) => {
+                if front_check == back_check {
+                    return false;
+                }
+            }
+            _ => ()
+        }
+
+        self.do_set_free(range);
+
+        true
+    }
+
+    fn do_set_free(&mut self, range: Range) {
+        let range_front = if range.min > 0 { range.push_front() } else { range };
         let range_back = range.push_back();
         let combine_front = self.free_list.get(&range_front).cloned();
         let combine_back = self.free_list.get(&range_back).cloned();
@@ -76,8 +100,6 @@ impl FreeRanges {
                 self.free_list.insert(range);
             }
         }
-
-        true
     }
 
     /// Marks a free index as used. Returns false if the index was not free
