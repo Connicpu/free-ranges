@@ -150,6 +150,12 @@ impl FreeRanges {
             self.free_list.remove(&Range::id(last));
         }
     }
+
+    #[inline]
+    pub fn is_free(&self, index: usize) -> bool {
+        let range = Range::id(index);
+        self.free_list.get(&range).is_some()
+    }
 }
 
 const EMPTY_RANGE: Range = Range { min: 1, max: 0 };
