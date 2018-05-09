@@ -1,7 +1,7 @@
-use std::fmt;
 use std::cmp::{self, Ordering};
-use std::collections::BTreeSet;
 use std::collections::btree_set::Iter;
+use std::collections::BTreeSet;
+use std::fmt;
 
 #[derive(Debug, Clone, Default)]
 pub struct FreeRanges {
@@ -62,7 +62,7 @@ impl FreeRanges {
                     return false;
                 }
             }
-            _ => ()
+            _ => (),
         }
 
         self.do_set_free(range);
@@ -71,7 +71,11 @@ impl FreeRanges {
     }
 
     fn do_set_free(&mut self, range: Range) {
-        let range_front = if range.min > 0 { range.push_front() } else { range };
+        let range_front = if range.min > 0 {
+            range.push_front()
+        } else {
+            range
+        };
         let range_back = range.push_back();
         let combine_front = self.free_list.get(&range_front).cloned();
         let combine_back = self.free_list.get(&range_back).cloned();
@@ -137,7 +141,7 @@ impl FreeRanges {
             if !range.empty() {
                 self.free_list.insert(range);
             }
-            return Some(first.min)
+            return Some(first.min);
         }
 
         None
@@ -279,7 +283,9 @@ impl PartialOrd for Range {
 impl Ord for Range {
     #[inline]
     fn cmp(&self, other: &Self) -> Ordering {
-        if self.contains(other.min) || self.contains(other.max) {
+        if self.contains(other.min) || self.contains(other.max) || other.contains(self.min)
+            || other.contains(self.max)
+        {
             return Ordering::Equal;
         }
 
