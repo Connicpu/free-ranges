@@ -198,6 +198,11 @@ impl FreeRanges {
         let range = Range::id(index);
         self.free_list.get(&range).is_some()
     }
+
+    #[inline]
+    pub fn clear(&mut self) {
+        self.free_list.clear();
+    }
 }
 
 const EMPTY_RANGE: Range = Range { min: 1, max: 0 };
