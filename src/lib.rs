@@ -1,5 +1,5 @@
 use std::cmp::{self, Ordering};
-use std::collections::btree_set::Iter;
+use std::collections::btree_set::{self, Iter};
 use std::collections::BTreeSet;
 use std::fmt;
 
@@ -36,6 +36,22 @@ impl FreeRanges {
     #[inline]
     pub fn free_ranges(&self) -> Iter<Range> {
         self.free_list.iter()
+    }
+
+    /// Iterator over all of the ranges starting at a specific index.
+    /// It will include the first range that contains the index if it
+    /// exists.
+    #[inline]
+    pub fn free_ranges_after(&self, start: usize) -> btree_set::Range<Range> {
+        self.free_list.range(Range::id(start)..)
+    }
+
+    /// Iterator over all of the ranges ending at a specific index.
+    /// It will include the last range that contains the index if it
+    /// exists.
+    #[inline]
+    pub fn free_ranges_before(&self, end: usize) -> btree_set::Range<Range> {
+        self.free_list.range(..=Range::id(end))
     }
 
     /// Marks a specific index as free
