@@ -51,7 +51,9 @@ impl FreeRanges {
     /// exists.
     #[inline]
     pub fn free_ranges_before(&self, end: usize) -> btree_set::Range<Range> {
-        self.free_list.range(..=Range::id(end))
+        use std::collections::Bound;
+        self.free_list
+            .range((Bound::Unbounded, Bound::Included(Range::id(end))))
     }
 
     /// Marks a specific index as free
